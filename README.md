@@ -1,12 +1,12 @@
 # whimsy
 
 An interactive, AI powered webcam experience build around creative and responsive interaction and playful interface which is easy to explore
-# ✨ Whimsy
+#  Whimsy
 
 Whimsy is a creative web project built to experiment with interactive UI, smooth user experiences, and a more playful approach to web design.
 
 
-## 📌 Features
+##  Features
 
 * Interactive and playful user interface
 * Responsive design for different screen sizes
@@ -16,13 +16,13 @@ Whimsy is a creative web project built to experiment with interactive UI, smooth
 * Focus on user experience and interaction
 
 
-## 🎯 Purpose
+##  Purpose
 
 Whimsy was created as a portfolio project to explore frontend development, UI design, animations, and interactive web experiences.
 
 It also helped me experiment with turning a visual idea into a functional and responsive website.
 
-## 🔮 Future Improvements
+##  Future Improvements
 
 * Add more interactive elements
 * Improve animations and transitions
@@ -30,7 +30,7 @@ It also helped me experiment with turning a visual idea into a functional and re
 * Improve accessibility
 * Optimize performance across devices
 
-## 👩‍💻 Author
+##  Author
 
 **Himanya Gupta**
 
