@@ -387,7 +387,7 @@
           </svg>
         </span></span>
       </h1>
-      <p class="tagline">Raise a finger and the air becomes a canvas. Whimsy watches through your camera and lets AI turn your movement into something unexpected.</p>
+      <p class="tagline">Raise a finger and the air becomes a canvas. Whimsy watches through your camera,interprets and lets AI turn your movement into something unexpected.</p>
       <div class="hero-actions">
         <button class="btn-primary magnetic js-enter">Try Whimsy <span class="arrow">→</span></button>
         <p class="privacy-note">Runs locally in your browser — nothing recorded, except the one frame you choose to transform. <button class="link-btn" id="privacy-more">How this works</button></p>
@@ -1158,30 +1158,38 @@
     camStarted=false;
   }
 
-  let handsScriptPromise=null;
-  function loadScript(src){
-    return new Promise((res,rej)=>{
-      const s=document.createElement('script');
-      s.src=src; s.crossOrigin='anonymous'; s.onload=res; s.onerror=rej;
-      document.head.appendChild(s);
-    });
-  }
+  let handLandmarkerPromise=null;
   async function loadHandsModel(){
-    if(!handsScriptPromise){
-      handsScriptPromise=loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js');
+    if(!handLandmarkerPromise){
+      handLandmarkerPromise=(async()=>{
+        const vision = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs');
+        const filesetResolver = await vision.FilesetResolver.forVisionTasks(
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
+        );
+        const baseOptions = {
+          modelAssetPath:'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task'
+        };
+        try{
+          return await vision.HandLandmarker.createFromOptions(filesetResolver,{
+            baseOptions:{...baseOptions,delegate:'GPU'}, runningMode:'VIDEO', numHands:1
+          });
+        }catch(e){
+          return await vision.HandLandmarker.createFromOptions(filesetResolver,{
+            baseOptions:{...baseOptions,delegate:'CPU'}, runningMode:'VIDEO', numHands:1
+          });
+        }
+      })();
     }
-    await handsScriptPromise;
-    if(!handsModel){
-      handsModel = new Hands({locateFile:(f)=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-      handsModel.setOptions({maxNumHands:1,modelComplexity:1,minDetectionConfidence:0.7,minTrackingConfidence:0.6});
-      handsModel.onResults(onHandResults);
-    }
+    handsModel = await handLandmarkerPromise;
   }
 
   function loopHands(){
-    if(!camStarted || !stream) return;
+    if(!camStarted || !stream || !handsModel) return;
     sizeCanvases();
-    handsModel.send({image:video}).catch(()=>{});
+    if(video.readyState>=2){
+      const results = handsModel.detectForVideo(video, performance.now());
+      onHandResults({multiHandLandmarks: results.landmarks||[]});
+    }
     rafHandle=requestAnimationFrame(loopHands);
   }
 
