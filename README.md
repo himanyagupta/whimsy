@@ -3,7 +3,7 @@
 An interactive, AI powered webcam experience build around creative and responsive interaction and playful interface which is easy to explore
 #  Whimsy
 
-Whimsy is a creative web project built to experiment with interactive UI, smooth user experiences, and a more playful approach to web design.
+Whimsy is a creative web project built to experiment with interactive UI, smooth user experiences, and a more playful approach to web design.!
 
 
 ##  Features
